@@ -44,11 +44,11 @@ const Navbar: React.FC<NavbarProps> = ({
             Home
           </button>
           <button
-            onClick={() => handleNavClick('category', 'happy')}
-            data-category="happy"
-            className={`text-sm transition-colors ${isHome && activeCategory === 'happy' ? 'text-white font-bold' : 'text-gray-300'} hover:text-white`}
+            onClick={() => handleNavClick('category', 'Happy')}
+            data-category="Happy"
+            className={`text-sm transition-colors ${isHome && activeCategory === 'Happy' ? 'text-white font-bold' : 'text-gray-300'} hover:text-white`}
           >
-            happy
+            Happy
           </button>
           <button
             onClick={() => handleNavClick('category', 'Travel')}
