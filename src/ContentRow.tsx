@@ -8,9 +8,10 @@ interface ContentRowProps {
   title: string;
   subtitle: string;
   items: MemoryItem[];
+  onVideoPlay?: (videoUrl: string, startTime: number) => void;
 }
 
-const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
+const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items, onVideoPlay }) => {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
   const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
@@ -19,9 +20,13 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
   const handleMouseEnter = (id: number) => {
     const timer = setTimeout(() => {
       setHoveredId(id);
-      // Auto-play video on hover
-      if (videoRefs.current[id]) {
-        videoRefs.current[id]?.play().catch(() => {});
+      // Auto-play video on hover (muted, looping)
+      const video = videoRefs.current[id];
+      if (video) {
+        video.currentTime = 0;
+        video.muted = true;
+        video.loop = true;
+        video.play().catch(() => {});
       }
     }, 200);
     setHoverTimer(timer);
@@ -33,9 +38,19 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
       setHoverTimer(null);
     }
     setHoveredId(null);
-    // Pause video when not hovering
-    if (videoRefs.current[id]) {
-      videoRefs.current[id]?.pause();
+    // Pause and reset video when not hovering
+    const video = videoRefs.current[id];
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  };
+
+  const handlePlayClick = (item: MemoryItem) => {
+    // Get current playback time from hover video
+    const startTime = videoRefs.current[item.id]?.currentTime || 0;
+    if (onVideoPlay) {
+      onVideoPlay(item.imageUrl, startTime);
     }
   };
 
@@ -49,6 +64,13 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
     return durations[id % durations.length];
   };
 
+  // Calculate transform origin based on card position
+  const getTransformOrigin = (index: number) => {
+    if (index === 0) return 'left center';
+    if (index === items.length - 1) return 'right center';
+    return 'center center';
+  };
+
   return (
     <div className="px-8 mb-12 overflow-visible">
       {/* Row Header */}
@@ -57,12 +79,12 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
         <p className="text-gray-400 text-base">{subtitle}</p>
       </div>
 
-      {/* Content Grid - No horizontal scroll */}
+      {/* Content Grid */}
       <div className="flex flex-wrap gap-[15px] overflow-visible">
         {items.map((item, index) => (
           <div
             key={item.id}
-            className="flex-shrink-0 group cursor-pointer relative"
+            className="flex-shrink-0 group relative"
             style={{ width: '250px' }}
             onMouseEnter={() => handleMouseEnter(item.id)}
             onMouseLeave={() => handleMouseLeave(item.id)}
@@ -72,7 +94,10 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
               {/* Normal Tile with Image Placeholder */}
               <motion.div
                 className="w-full aspect-video rounded-md overflow-hidden relative"
-                style={{ borderRadius: '6px' }}
+                style={{
+                  borderRadius: '6px',
+                  transformOrigin: getTransformOrigin(index)
+                }}
                 animate={{
                   opacity: hoveredId === item.id ? 0 : 1,
                   scale: hoveredId === item.id ? 0.95 : 1,
@@ -97,7 +122,11 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
               {hoveredId === item.id && (
                 <motion.div
                   className="absolute top-0 left-0 w-[320px] bg-gray-900 rounded-lg overflow-hidden shadow-2xl"
-                  style={{ zIndex: 100, transform: 'translateY(-20px)' }}
+                  style={{
+                    zIndex: 100,
+                    transform: 'translateY(-20px)',
+                    transformOrigin: getTransformOrigin(index)
+                  }}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1.5 }}
                   exit={{ opacity: 0, scale: 0.9 }}
@@ -108,7 +137,7 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
                     <video
                       ref={(el) => { videoRefs.current[item.id] = el; }}
                       className="w-full h-full object-cover"
-                      src="https://www.w3schools.com/html/mov_bbb.mp4"
+                      src={item.imageUrl}
                       muted
                       loop
                       playsInline
@@ -117,13 +146,16 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
 
                     {/* Info Overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent">
-                        {/* Action Buttons */}
+                      {/* Action Buttons */}
                       <div className="flex items-center gap-2 mb-2">
-                        <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
+                        <button
+                          onClick={() => handlePlayClick(item)}
+                          className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer"
+                        >
                           <PlayIcon className="w-4 h-4 text-black ml-0.5" />
                         </button>
                         <button
-                          className={`w-8 h-8 border rounded-full flex items-center justify-center transition-colors ${isInMyList(item.id) ? 'bg-white border-white' : 'border-gray-400 hover:border-white'}`}
+                          className={`w-8 h-8 border rounded-full flex items-center justify-center transition-colors ${isInMyList(item.id) ? 'bg-white border-white' : 'border-gray-400 hover:border-white'} cursor-pointer`}
                           onClick={() => toggleMyList(item.id)}
                         >
                           {isInMyList(item.id) ? (
@@ -132,7 +164,7 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items }) => {
                             <PlusIcon className="w-4 h-4 text-white" />
                           )}
                         </button>
-                        <button className="w-8 h-8 border border-gray-400 rounded-full flex items-center justify-center hover:border-white transition-colors">
+                        <button className="w-8 h-8 border border-gray-400 rounded-full flex items-center justify-center hover:border-white transition-colors cursor-pointer">
                           <HandThumbUpIcon className="w-4 h-4 text-white" />
                         </button>
                       </div>

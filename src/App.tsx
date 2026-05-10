@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PlayIcon, InformationCircleIcon } from '@heroicons/react/24/solid';
 import Navbar from './components/Navbar';
 import ContentRow from './ContentRow';
+import VideoPlayer from './components/VideoPlayer';
 import { memories, categories } from './data/memories';
 import { useMyList } from './context/MyListContext';
 import './App.css';
@@ -17,6 +18,7 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [activeCategory, setActiveCategory] = useState('');
+  const [currentVideo, setCurrentVideo] = useState<{ url: string; startTime: number } | null>(null);
   const { myList } = useMyList();
   
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -26,6 +28,14 @@ const App: React.FC = () => {
     if (audioRef.current) {
       audioRef.current.play().catch(e => console.log('Audio play failed:', e));
     }
+  };
+
+  const handleVideoPlay = (videoUrl: string, startTime: number) => {
+    setCurrentVideo({ url: videoUrl, startTime });
+  };
+
+  const closeVideoPlayer = () => {
+    setCurrentVideo(null);
   };
 
   const handleProfileSelect = (profileName: string, color: string) => {
@@ -403,6 +413,7 @@ const App: React.FC = () => {
                   title={row.title}
                   subtitle={row.subtitle}
                   items={row.items}
+                  onVideoPlay={handleVideoPlay}
                 />
               ))}
               {displayedRows.length === 0 && searchQuery && (
@@ -507,6 +518,7 @@ const App: React.FC = () => {
                         title={row.title}
                         subtitle={row.subtitle}
                         items={row.items}
+                        onVideoPlay={handleVideoPlay}
                       />
                     ))}
                   </div>
@@ -613,6 +625,18 @@ const App: React.FC = () => {
               </motion.div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Video Player Modal */}
+      <AnimatePresence>
+        {currentVideo && (
+          <VideoPlayer
+            key="video-player"
+            videoUrl={currentVideo.url}
+            startTime={currentVideo.startTime}
+            onClose={closeVideoPlayer}
+          />
         )}
       </AnimatePresence>
     </div>
