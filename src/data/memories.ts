@@ -18,7 +18,7 @@ export interface ContentRow {
 }
 
 export const categories = [
-  'To be Happy',
+  'happy',
   'Travel',
   'Milestones',
   'Celebrations',
@@ -38,7 +38,7 @@ export const memories: { [key: string]: ContentRow[] } = {
           type: 'video',
           thumbnail: 'to-pink-400',
           imageUrl: 'https://images.unsplash.com/photo-1518152006832-6a10e3e3e4c4?w=400&h=225&fit=crop',
-          category: 'To be Happy',
+          category: 'happy',
           year: 'Year 1',
           rowSection: 'First Year Memories',
           isInMyList: false
@@ -104,7 +104,7 @@ export const memories: { [key: string]: ContentRow[] } = {
           type: 'video',
           thumbnail: 'to-red-600',
           imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=225&fit=crop',
-          category: 'To be Happy',
+          category: 'happy',
           year: 'Year 1',
           rowSection: 'Early Adventures',
           isInMyList: false
@@ -276,7 +276,7 @@ export const memories: { [key: string]: ContentRow[] } = {
           type: 'video',
           thumbnail: 'to-yellow-400',
           imageUrl: 'https://images.unsplash.com/photo-1516589178451-c3869f81051a?w=400&h=225&fit=crop',
-          category: 'To be Happy',
+          category: 'happy',
           year: 'Year 3',
           rowSection: 'Anniversary Celebrations',
           isInMyList: false

@@ -10,7 +10,7 @@ interface NavbarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   currentScreen: string;
-  handleNavClick: (target: 'home' | 'category' | 'favorites', categoryName?: string) => void;
+  handleNavClick: (target: 'home' | 'category' | 'favorites' | 'profiles', categoryName?: string) => void;
   activeCategory?: string;
   onProfileSelect: (profileName: string, color: string) => void;
 }
@@ -44,21 +44,21 @@ const Navbar: React.FC<NavbarProps> = ({
             Home
           </button>
           <button
-            onClick={() => handleNavClick('category')}
-            data-category="To be Happy"
-            className={`text-sm transition-colors ${isHome && activeCategory === 'To be Happy' ? 'text-white font-bold' : 'text-gray-300'} hover:text-white`}
+            onClick={() => handleNavClick('category', 'happy')}
+            data-category="happy"
+            className={`text-sm transition-colors ${isHome && activeCategory === 'happy' ? 'text-white font-bold' : 'text-gray-300'} hover:text-white`}
           >
-            To be Happy
+            happy
           </button>
           <button
-            onClick={() => handleNavClick('category')}
+            onClick={() => handleNavClick('category', 'Travel')}
             data-category="Travel"
             className={`text-sm transition-colors ${isHome && activeCategory === 'Travel' ? 'text-white font-bold' : 'text-gray-300'} hover:text-white`}
           >
             Travel
           </button>
           <button
-            onClick={() => handleNavClick('category')}
+            onClick={() => handleNavClick('category', 'Milestones')}
             data-category="Milestones"
             className={`text-sm transition-colors ${isHome && activeCategory === 'Milestones' ? 'text-white font-bold' : 'text-gray-300'} hover:text-white`}
           >
@@ -157,14 +157,30 @@ const Navbar: React.FC<NavbarProps> = ({
 
               {/* Menu Items */}
               <div className="py-1">
-                <button className="w-full px-4 py-2 text-left text-gray-300 hover:text-white hover:bg-gray-800 transition-colors">
+                <button
+                  className="w-full px-4 py-2 text-left text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    handleNavClick('profiles');
+                  }}
+                >
                   Manage Profiles
                 </button>
-                <button className="w-full px-4 py-2 text-left text-gray-300 hover:text-white hover:bg-gray-800 transition-colors">
+                <button
+                  className="w-full px-4 py-2 text-left text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    handleNavClick('profiles');
+                  }}
+                >
                   Account
                 </button>
                 <button
                   className="w-full px-4 py-2 text-left text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    handleNavClick('profiles');
+                  }}
                 >
                   Sign Out
                 </button>

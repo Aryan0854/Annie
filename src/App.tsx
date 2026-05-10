@@ -46,7 +46,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleNavClick = (target: 'home' | 'category' | 'favorites', categoryName?: string) => {
+  const handleNavClick = (target: 'home' | 'category' | 'favorites' | 'profiles', categoryName?: string) => {
     switch (target) {
       case 'home':
         setActiveCategory('');
@@ -61,6 +61,10 @@ const App: React.FC = () => {
       case 'favorites':
         setActiveCategory('');
         navigateTo('favorites');
+        break;
+      case 'profiles':
+        setActiveCategory('');
+        navigateTo('profiles');
         break;
     }
   };
