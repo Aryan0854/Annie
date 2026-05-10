@@ -21,7 +21,7 @@ A personalized Netflix-style web application celebrating an anniversary, built w
 
 ### 3. **Home Page (Netflix Experience)** 🏠
 - Hero section with photo background
-- Title: "Life of Jia & Aryan"
+- Title: "Life of Chitrangi & Aryan"
 - "Play" and "More Info" buttons
 - 3 Content Rows with hover-expand cards
 
@@ -168,7 +168,7 @@ Personal use - Customize freely for your celebration! ❤️
 
 ## 📝 Notes
 
-- Built for Jia & Aryan Anniversary
+- Built for Chitrangi & Aryan Anniversary
 - All placeholder content easily customizable
 - Optimized for mobile viewing
 - Ready for deployment to Vercel/GitHub Pages
