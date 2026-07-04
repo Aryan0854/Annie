@@ -72,7 +72,6 @@ const backgroundHearts = Array.from({ length: 15 }).map((_, i) => ({
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState('splash');
-  const [navigationHistory, setNavigationHistory] = useState<string[]>([]);
   const [showVideoCredits, setShowVideoCredits] = useState(false);
   const [activeProfile, setActiveProfile] = useState({ id: 1, name: 'Year 1', color: 'bg-blue-600' });
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -107,6 +106,7 @@ const App: React.FC = () => {
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const bgAudioRef = useRef<HTMLAudioElement>(null);
 
   const heroBackgrounds: { [key: string]: string } = {
     'Year 1': '/media/videos/Template-1.mp4',
@@ -118,7 +118,6 @@ const App: React.FC = () => {
   const isHeroBgVideo = /\.(mp4|mov|webm)$/i.test(activeHeroBg);
 
   const [currentSongUrl, setCurrentSongUrl] = useState<string>('');
-  const bgAudioRef = useRef<HTMLAudioElement>(null);
 
   // Play random song based on active profile when on home or favorites screens
   useEffect(() => {
@@ -140,6 +139,7 @@ const App: React.FC = () => {
     } else {
       setCurrentSongUrl('');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeProfile, currentScreen]);
 
   // Handle actual playback and auto-playing the next random song on end
@@ -157,6 +157,7 @@ const App: React.FC = () => {
       audio.pause();
       audio.src = '';
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSongUrl]);
 
   // Pause bg audio when a full screen video starts, resume when it ends
@@ -198,7 +199,6 @@ const App: React.FC = () => {
   };
 
   const navigateTo = (screen: string) => {
-    setNavigationHistory(prev => [...prev, currentScreen]);
     setCurrentScreen(screen);
   };
 
