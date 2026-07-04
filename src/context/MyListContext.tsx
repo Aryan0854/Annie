@@ -1,17 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface MemoryItem {
-  id: number;
-  title: string;
-  description: string;
-  type: 'video' | 'image';
-  thumbnail: string;
-  imageUrl: string;
-  category: string;
-  year: string;
-  rowSection: string;
-  isInMyList?: boolean;
-}
 
 interface MyListContextType {
   myList: Set<number>;

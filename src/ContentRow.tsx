@@ -50,7 +50,7 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items, onVideo
     // Get current playback time from hover video
     const startTime = videoRefs.current[item.id]?.currentTime || 0;
     if (onVideoPlay) {
-      onVideoPlay(item.imageUrl, startTime);
+      onVideoPlay(item.videoUrl || item.imageUrl, startTime);
     }
   };
 
@@ -132,17 +132,25 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items, onVideo
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
-                  {/* Video */}
+                  {/* Video or Image */}
                   <div className="relative aspect-video">
-                    <video
-                      ref={(el) => { videoRefs.current[item.id] = el; }}
-                      className="w-full h-full object-cover"
-                      src={item.imageUrl}
-                      muted
-                      loop
-                      playsInline
-                      autoPlay
-                    />
+                    {item.videoUrl ? (
+                      <video
+                        ref={(el) => { videoRefs.current[item.id] = el; }}
+                        className="w-full h-full object-cover"
+                        src={item.videoUrl}
+                        muted
+                        loop
+                        playsInline
+                        autoPlay
+                      />
+                    ) : (
+                      <img
+                        className="w-full h-full object-cover"
+                        src={item.imageUrl}
+                        alt={item.title}
+                      />
+                    )}
 
                     {/* Info Overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent">
@@ -150,12 +158,12 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items, onVideo
                       <div className="flex items-center gap-2 mb-2">
                         <button
                           onClick={() => handlePlayClick(item)}
-                          className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer"
+                          className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer hover-heartbeat"
                         >
                           <PlayIcon className="w-4 h-4 text-black ml-0.5" />
                         </button>
                         <button
-                          className={`w-8 h-8 border rounded-full flex items-center justify-center transition-colors ${isInMyList(item.id) ? 'bg-white border-white' : 'border-gray-400 hover:border-white'} cursor-pointer`}
+                          className={`w-8 h-8 border rounded-full flex items-center justify-center transition-colors ${isInMyList(item.id) ? 'bg-white border-white' : 'border-gray-400 hover:border-white'} cursor-pointer hover-heartbeat`}
                           onClick={() => toggleMyList(item.id)}
                         >
                           {isInMyList(item.id) ? (
@@ -164,7 +172,7 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, subtitle, items, onVideo
                             <PlusIcon className="w-4 h-4 text-white" />
                           )}
                         </button>
-                        <button className="w-8 h-8 border border-gray-400 rounded-full flex items-center justify-center hover:border-white transition-colors cursor-pointer">
+                        <button className="w-8 h-8 border border-gray-400 rounded-full flex items-center justify-center hover:border-white transition-colors cursor-pointer hover-heartbeat">
                           <HandThumbUpIcon className="w-4 h-4 text-white" />
                         </button>
                       </div>

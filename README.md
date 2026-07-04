@@ -5,7 +5,7 @@ A personalized Netflix-style web application celebrating an anniversary, built w
 ## ✨ Key Features - UPDATED
 
 ### 1. **Intro Sequence with Video** 🎬
-- **Netflix.jpg Logo**: Real Netflix logo image displayed prominently
+- **Netflix-Title.svg Logo**: Real Netflix logo SVG displayed prominently
 - **Intro Video**: `/Intro.mp4` auto-plays on background with gradient overlay
 - **3D Flip Animation**: Logo rotates and scales in with spring physics
 - **Animated Rings**: Pulsing red borders create dramatic entrance
@@ -41,7 +41,7 @@ A personalized Netflix-style web application celebrating an anniversary, built w
 ```
 public/
   Intro.mp4              # Intro video
-  Netflix.jpg            # Netflix logo image
+  Netflix-Title.svg     # Netflix logo SVG
 src/
   App.tsx               # Main component (UPDATED)
   ContentRow.tsx        # Content row component
@@ -82,7 +82,7 @@ npm run build
 
 ### Replace Logo
 
-1. Replace `public/Netflix.jpg` with your preferred logo
+1. Replace `public/Netflix-Title.svg` with your preferred logo
 2. Or change the src in App.tsx line 59
 
 ### Update Profile Years
@@ -153,7 +153,7 @@ Add to package.json:
 
 ## 🎯 Features Checklist
 
-- [x] Netflix.jpg logo everywhere
+- [x] Netflix-Title.svg logo everywhere
 - [x] Intro video (Intro.mp4)
 - [x] Year 1, 2, 3 profiles
 - [x] Netflix red color scheme

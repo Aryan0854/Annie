@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronDownIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { profileImages } from '../data/memories';
 
 interface NavbarProps {
   activeProfile: { id: number; name: string; color: string };
@@ -13,6 +14,7 @@ interface NavbarProps {
   handleNavClick: (target: 'home' | 'category' | 'favorites' | 'profiles', categoryName?: string) => void;
   activeCategory?: string;
   onProfileSelect: (profileName: string, color: string) => void;
+  onLoveLetterClick?: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -26,7 +28,8 @@ const Navbar: React.FC<NavbarProps> = ({
   currentScreen,
   handleNavClick,
   activeCategory = '',
-  onProfileSelect
+  onProfileSelect,
+  onLoveLetterClick
 }) => {
   const isHome = currentScreen === 'home';
   const isFavorites = currentScreen === 'favorites';
@@ -35,7 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({
     <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-[4%] py-4 bg-gradient-to-b from-black/70 to-transparent" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
       {/* Left Side: Logo + Nav Links */}
       <div className="flex items-center">
-        <div className="text-xl font-bold text-[#e50914] mr-6" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>NETFLIX</div>
+        <img src="/Netflix.svg" alt="Netflix" className="h-8 mr-6" />
         <nav className="flex items-center gap-5 text-sm">
           <button
             onClick={() => handleNavClick('home')}
@@ -44,9 +47,9 @@ const Navbar: React.FC<NavbarProps> = ({
             Home
           </button>
           <button
-            onClick={() => handleNavClick('category', 'Happy')}
-            data-category="Happy"
-            className={`text-sm transition-colors ${isHome && activeCategory === 'Happy' ? 'text-white font-bold' : 'text-gray-300'} hover:text-white`}
+            onClick={() => handleNavClick('category', 'happy')}
+            data-category="happy"
+            className={`text-sm transition-colors ${isHome && activeCategory === 'happy' ? 'text-white font-bold' : 'text-gray-300'} hover:text-white`}
           >
             Happy
           </button>
@@ -100,12 +103,18 @@ const Navbar: React.FC<NavbarProps> = ({
           </button>
         )}
 
-        {/* Notifications Icon */}
-        <button className="text-gray-300 hover:text-white transition-colors">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM10.5 17h5l-5 5v-5zM6 17h5l-5 5v-5zM12 3v1m0 16v1m8.66-15.66l-.71.71M6.05 17.95l-.71.71M21 12h-1M4 12H3m17.66 5.66l-.71-.71M6.05 6.05l-.71-.71" />
-          </svg>
-        </button>
+        {/* Love Letter Envelope */}
+        {onLoveLetterClick && (
+          <button
+            className="text-red-500 hover:text-red-400 transition-all duration-300 hover:scale-110 flex items-center justify-center p-1.5 rounded-full hover:bg-red-500/10 cursor-pointer animate-pulse relative"
+            onClick={onLoveLetterClick}
+            title="An Anniversary Letter for You"
+          >
+            <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </button>
+        )}
 
         {/* Profile Switcher */}
         <div className="relative">
@@ -114,9 +123,17 @@ const Navbar: React.FC<NavbarProps> = ({
             onMouseEnter={() => setShowProfileMenu(true)}
             onClick={() => setShowProfileMenu(!showProfileMenu)}
           >
-            <div className={`w-8 h-8 rounded ${activeProfile.color} flex items-center justify-center text-white text-sm font-bold`}>
-              {activeProfile.name[0]}
-            </div>
+            {profileImages.find(p => p.name === activeProfile.name)?.imageUrl ? (
+              <img
+                src={profileImages.find(p => p.name === activeProfile.name)?.imageUrl}
+                alt={activeProfile.name}
+                className="w-8 h-8 rounded object-cover"
+              />
+            ) : (
+              <div className={`w-8 h-8 rounded ${activeProfile.color} flex items-center justify-center text-white text-sm font-bold`}>
+                {activeProfile.name[0]}
+              </div>
+            )}
             <ChevronDownIcon className="w-4 h-4 text-white" />
           </button>
 
@@ -131,25 +148,26 @@ const Navbar: React.FC<NavbarProps> = ({
 
               {/* Profiles */}
               <div className="py-2">
-                {[
-                  { name: 'Year 1', color: 'bg-blue-600' },
-                  { name: 'Year 2', color: 'bg-pink-600' },
-                  { name: 'Year 3', color: 'bg-green-600' }
-                ].map((profile, index) => (
-                  <button
-                    key={profile.name}
-                    className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-800 transition-colors"
-                    onClick={() => {
-                      onProfileSelect(profile.name, profile.color);
-                      setShowProfileMenu(false);
-                    }}
-                  >
-                    <div className={`w-10 h-10 rounded ${profile.color} flex items-center justify-center text-white font-bold`}>
-                      {profile.name[0]}
-                    </div>
-                    <span className="text-white">{profile.name}</span>
-                  </button>
-                ))}
+                {profileImages.map((profile, index) => {
+                  const colors = ['bg-blue-600', 'bg-pink-600', 'bg-green-600'];
+                  return (
+                    <button
+                      key={profile.name}
+                      className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-800 transition-colors text-left"
+                      onClick={() => {
+                        onProfileSelect(profile.name, colors[index]);
+                        setShowProfileMenu(false);
+                      }}
+                    >
+                      <img
+                        src={profile.imageUrl}
+                        alt={profile.name}
+                        className="w-10 h-10 rounded object-cover"
+                      />
+                      <span className="text-white text-sm font-medium">{profile.name}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Divider */}
@@ -165,15 +183,6 @@ const Navbar: React.FC<NavbarProps> = ({
                   }}
                 >
                   Manage Profiles
-                </button>
-                <button
-                  className="w-full px-4 py-2 text-left text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
-                  onClick={() => {
-                    setShowProfileMenu(false);
-                    handleNavClick('profiles');
-                  }}
-                >
-                  Account
                 </button>
                 <button
                   className="w-full px-4 py-2 text-left text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
